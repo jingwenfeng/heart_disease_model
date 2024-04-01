@@ -1,6 +1,8 @@
 import pandas as pd
 import pickle
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 def main():
     # Load the test data
@@ -21,10 +23,12 @@ def main():
     heart_disease_probabilities = y_pred_proba[:, 1]
 
     # Create a DataFrame to store the results
-    results_df = pd.DataFrame({'Patient ID': range(1, len(X_test) + 1),
-                               'Predicted Outcome': y_pred,
-                               'Actual Outcome': y_test['target'],
-                               'Heart Disease Probability': heart_disease_probabilities})
+    results_df = pd.DataFrame({
+        'Patient ID': range(1, len(X_test) + 1),
+        'Predicted Outcome': y_pred,
+        'Actual Outcome': y_test['target'],
+        'Heart Disease Probability': heart_disease_probabilities
+    })
 
     # Print the results for each patient
     print("Patient ID\tPredicted Outcome\tActual Outcome\tHeart Disease Probability")
@@ -38,10 +42,20 @@ def main():
     f1 = f1_score(y_test, y_pred)
 
     print("\nTest set results:")
-    print("Accuracy: {:.3f}".format(accuracy))
-    print("Precision: {:.3f}".format(precision))
-    print("Recall: {:.3f}".format(recall))
-    print("F1-score: {:.3f}".format(f1))
+    print(f"Accuracy: {accuracy:.3f}")
+    print(f"Precision: {precision:.3f}")
+    print(f"Recall: {recall:.3f}")
+    print(f"F1-score: {f1:.3f}")
+
+    # Plot the confusion matrix
+    conf_matrix = confusion_matrix(y_test, y_pred)
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=['No Disease', 'Disease'], yticklabels=['No Disease', 'Disease'])
+    plt.xlabel('Predicted Outcome')
+    plt.ylabel('Actual Outcome')
+    plt.title('Confusion Matrix')
+    plt.show()
+
 
 if __name__ == "__main__":
     main()
