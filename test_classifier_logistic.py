@@ -53,7 +53,7 @@ def main():
     sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=['No Disease', 'Disease'], yticklabels=['No Disease', 'Disease'])
     plt.xlabel('Predicted Outcome')
     plt.ylabel('Actual Outcome')
-    plt.title('Confusion Matrix')
+    plt.title('Confusion Matrix for Logistic Regression')
     plt.show()
 
 

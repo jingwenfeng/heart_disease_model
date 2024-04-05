@@ -4,21 +4,29 @@ import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import train_test_split
 
 
 X_test = pd.read_csv('X_test.csv')
 y_test = pd.read_csv('y_test.csv')
 
 
-with open('optimized_RandomForest_regression_model.pkl', 'rb') as file:
-    best_model = pickle.load(file)
+with open('optimized_svm_model.pkl', 'rb') as file:
+    svm_best_model = pickle.load(file)
 
 
-y_pred = best_model.predict(X_test)
+svm_y_pred = svm_best_model.predict(X_test)
+
+
+
+knn_accuracy = accuracy_score(y_test, svm_y_pred)
+knn_precision = precision_score(y_test, svm_y_pred)
+knn_recall = recall_score(y_test, svm_y_pred)
+knn_f1 = f1_score(y_test, svm_y_pred)
 
 
 results_df = pd.DataFrame({'Patient ID': range(1, len(X_test) + 1),
-                           'Predicted Outcome': y_pred,
+                           'Predicted Outcome': svm_y_pred,
                            'Actual Outcome': y_test['target']})
 
 
@@ -27,20 +35,19 @@ for index, row in results_df.iterrows():
     print(f"{row['Patient ID']}\t\t{row['Predicted Outcome']}\t\t\t{row['Actual Outcome']}")
 
 
-accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred)
-recall = recall_score(y_test, y_pred)
-f1 = f1_score(y_test, y_pred)
-
-print("\nTest set results:")
-print("Accuracy: {:.3f}".format(accuracy))
-print("Precision: {:.3f}".format(precision))
-print("Recall: {:.3f}".format(recall))
-print("F1-score: {:.3f}".format(f1))
 
 
 
-conf_matrix = confusion_matrix(y_test, y_pred)
+print("\nSupport Vector Machine:")
+print("Accuracy: {:.3f}".format(knn_accuracy))
+print("Precision: {:.3f}".format(knn_precision))
+print("Recall: {:.3f}".format(knn_recall))
+print("F1-score: {:.3f}".format(knn_f1))
+
+
+
+
+conf_matrix = confusion_matrix(y_test, svm_y_pred)
 
 
 plt.figure(figsize=(8, 6))
@@ -49,5 +56,5 @@ sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues',
             yticklabels=['No Disease', 'Disease'])
 plt.xlabel('Predicted Outcome')
 plt.ylabel('Actual Outcome')
-plt.title('Confusion Matrix for Random Forest Model')
+plt.title('Confusion Matrix for SVM Model')
 plt.show()
