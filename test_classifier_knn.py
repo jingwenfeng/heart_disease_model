@@ -6,21 +6,19 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 
-# Load the testing data
+
 X_test = pd.read_csv('X_test.csv')
 y_test = pd.read_csv('y_test.csv')
 
-# Load the trained model
+
 with open('optimized_knn_model.pkl', 'rb') as file:
     knn_best_model = pickle.load(file)
 
-# Make predictions on the test set
 
 knn_y_pred = knn_best_model.predict(X_test)
 
 
 
-# Calculate evaluation metrics for KNN
 knn_accuracy = accuracy_score(y_test, knn_y_pred)
 knn_precision = precision_score(y_test, knn_y_pred)
 knn_recall = recall_score(y_test, knn_y_pred)
@@ -31,7 +29,7 @@ results_df = pd.DataFrame({'Patient ID': range(1, len(X_test) + 1),
                            'Predicted Outcome': knn_y_pred,
                            'Actual Outcome': y_test['target']})
 
-# Print the predicted outcome and actual outcome for each patient
+
 print("Patient ID\tPredicted Outcome\tActual Outcome")
 for index, row in results_df.iterrows():
     print(f"{row['Patient ID']}\t\t{row['Predicted Outcome']}\t\t\t{row['Actual Outcome']}")
@@ -48,10 +46,10 @@ print("F1-score: {:.3f}".format(knn_f1))
 
 
 
-# Calculate the confusion matrix
+
 conf_matrix = confusion_matrix(y_test, knn_y_pred)
 
-# Plot the confusion matrix
+
 plt.figure(figsize=(8, 6))
 sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues',
             xticklabels=['No Disease', 'Disease'],
